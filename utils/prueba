@@ -1,0 +1,29 @@
+const createPost = catchAsync(async (req, res, next) => {
+  const { title, content } = req.body;
+  const { sessionUser } = req;
+
+  const newPost = await Post.create({
+    title,
+    content,
+    userId: sessionUser.id,
+  });
+
+  await uploadPostImgs(req.files, newPost.id);
+
+  res.status(201).json({
+    status: "success",
+    data: { newPost },
+  });
+});
+
+const updatePost = catchAsync(async (req, res, next) => {
+  const { title, content } = req.body;
+  const { post } = req;
+
+  await post.update({ title, content });
+
+  res.status(200).json({
+    status: "success",
+    data: { post },
+  });
+});
